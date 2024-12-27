@@ -1,0 +1,20 @@
+OBHAJOBA MOJEJ PRÁCE
+
+Tema: App using MySQL DB
+Predpokladany vystup: Aplikacia s databazou pokemonov
+
+Hlavne ciele:
+- UI
+- CRUD operacie (create, read, update, delete)
+- jednoduche na pouzitie
+
+Splnene ciele:
+- 
+
+Hlavna tabulka: POKEMON
+PK: pokemon_id (int, UNIQUE)
+- name (varchar)
+- base_hp (int)
+- base_atk (int)
+- type (varchar)
+- evolution (varchar)

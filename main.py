@@ -1,6 +1,7 @@
-"""
-BASIC IMPORT
-"""
+
+from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+
 import mysql.connector
 mydb = mysql.connector.connect(
     host="localhost",
@@ -14,45 +15,56 @@ mycursor = mydb.cursor()
 """
 CREATE DATABASE
 """
-mycursor.execute("CREATE DATABASE pokemon_app_db")
-mydb.database = "pokemon_app_db"
+app = Flask(__name__)
 
-create_table_query = """
-CREATE TABLE Pokemon (
-    pokemon_id INT UNIQUE NOT NULL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    base_hp INT NOT NULL,
-    base_atk INT NOT NULL,
-    type VARCHAR(20),
-    evolution VARCHAR(50)
-);
+@app.route("/")
+def index():
+  return render_template("index.html")
+
+
+
 """
-mycursor.execute(create_table_query)
+CREATE DATABASE
+"""
+# mycursor.execute("CREATE DATABASE pokemon_app_db")
+# mydb.database = "pokemon_app_db"
+
+# create_table_query = """
+# CREATE TABLE IF NOT EXISTS Pokemon (
+#     pokemon_id INT UNIQUE NOT NULL PRIMARY KEY,
+#     name VARCHAR(255) NOT NULL,
+#     base_hp INT NOT NULL,
+#     base_atk INT NOT NULL,
+#     type VARCHAR(50),
+#     evolution VARCHAR(50)
+# );
+# """
+# mycursor.execute(create_table_query)
 
 
 
 """
 CREATE TABLE AND INSERT DATA
 """
-pokemon_data = [
-    (1, 'Bulbasaur', 45, 49, 'Grass/Poison', 'Base'),
-    (2, 'Ivysaur', 60, 62, 'Grass/Poison', 'Stage 1'),
-    (3, 'Venusaur', 80, 82, 'Grass/Poison', 'Stage 2'),
-    (4, 'Charmander', 39, 52, 'Fire', 'Base'),
-    (5, 'Charmeleon', 58, 64, 'Fire', 'Stage 1'),
-    (6, 'Charizard', 78, 84, 'Fire/Flying', 'Stage 2'),
-    (7, 'Squirtle', 44, 48, 'Water', 'Base'),
-    (8, 'Wartortle', 59, 63, 'Water', 'Stage 1'),
-    (9, 'Blastoise', 79, 83, 'Water', 'Stage 2'),
-    (10, 'Pikachu', 35, 55, 'Electric', 'Base'),
-    (11, 'Raichu', 60, 90, 'Electric', 'Stage 1')
-]
-insert_query = """
-INSERT INTO pokemon (pokemon_id, name, base_hp, base_atk, type, evolution)
-VALUES (%s, %s, %s, %s, %s, %s)
-"""
-mycursor.executemany(insert_query, pokemon_data)
-mydb.commit()
+# pokemon_data = [
+#     (1, 'Bulbasaur', 45, 49, 'Grass/Poison', 'Base'),
+#     (2, 'Ivysaur', 60, 62, 'Grass/Poison', 'Stage 1'),
+#     (3, 'Venusaur', 80, 82, 'Grass/Poison', 'Stage 2'),
+#     (4, 'Charmander', 39, 52, 'Fire', 'Base'),
+#     (5, 'Charmeleon', 58, 64, 'Fire', 'Stage 1'),
+#     (6, 'Charizard', 78, 84, 'Fire/Flying', 'Stage 2'),
+#     (7, 'Squirtle', 44, 48, 'Water', 'Base'),
+#     (8, 'Wartortle', 59, 63, 'Water', 'Stage 1'),
+#     (9, 'Blastoise', 79, 83, 'Water', 'Stage 2'),
+#     (10, 'Pikachu', 35, 55, 'Electric', 'Base'),
+#     (11, 'Raichu', 60, 90, 'Electric', 'Stage 1')
+# ]
+# insert_query = """
+# INSERT INTO IF NOT EXISTS pokemon (pokemon_id, name, base_hp, base_atk, type, evolution)
+# VALUES (%s, %s, %s, %s, %s, %s)
+# """
+# mycursor.executemany(insert_query, pokemon_data)
+# mydb.commit()
 
 
 
@@ -92,12 +104,15 @@ def DeletePokemon():
 """
 CHECKER
 """
-mycursor.execute("SHOW TABLES")
-print("Tables in 'pokemon_app_db':")
-for table in mycursor:
-    print(table)
+# mycursor.execute("SHOW TABLES")
+# print("Tables in 'pokemon_app_db':")
+# for table in mycursor:
+#     print(table)
 
-mycursor.execute("SELECT * FROM pokemon")
-print("Inserted Pokémon:")
-for row in mycursor:
-    print(row)
+# mycursor.execute("SELECT * FROM pokemon")
+# print("Inserted Pokémon:")
+# for row in mycursor:
+#     print(row)
+
+if __name__ in "__main__":
+   app.run(debug=True)

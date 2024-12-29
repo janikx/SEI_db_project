@@ -16,10 +16,10 @@ POKEMON
 PK: pokemon_id (int, UNIQUE)
 - name (varchar)
 - base_hp (int)
-- base_atk (int)
 - type (varchar)
 - evolution (varchar)
 
 Pouzite kniznice:
 - Flask (GUI, web, prepojenie web s python)
 - mysql.connector (prepojenie db s python)
+- FlaskSQLAlchemy

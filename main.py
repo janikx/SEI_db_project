@@ -1,118 +1,92 @@
-
-from flask import Flask, render_template
+# imports
+from flask import Flask, render_template, request, redirect
+from flask_scss import Scss
 from flask_sqlalchemy import SQLAlchemy
 
-import mysql.connector
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password=""
-)
-mycursor = mydb.cursor()
-
 
 
 """
-CREATE DATABASE
+APP BASE
 """
 app = Flask(__name__)
+Scss(app)
 
-@app.route("/")
+# db creation
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///pokemon_db.db"
+pokemon_db = SQLAlchemy(app)
+
+# Model for one row
+class Pokemon(pokemon_db.Model):
+  p_name = pokemon_db.Column(pokemon_db.String(100))
+  p_id = pokemon_db.Column(pokemon_db.Integer, primary_key=True)
+  p_type = pokemon_db.Column(pokemon_db.String(50))
+  p_hp = pokemon_db.Column(pokemon_db.Integer)
+  p_evolution = pokemon_db.Column(pokemon_db.String(50))
+
+  def __repr__(self) -> str:
+    return f"Pokemon #{self.p_id}"
+
+
+
+"""
+MAIN PAGE
+"""
+@app.route("/",methods=["POST","GET"])
 def index():
-  return render_template("index.html")
+  # add pokemon
+  if request.method == "POST":
+    cur_pokemon = request.form["Name"]
+    new_pokemon = Pokemon(p_name=cur_pokemon)
+    try:
+      pokemon_db.session.add(new_pokemon)
+      pokemon_db.session.commit()
+      return redirect("/")
+    except Exception as e:
+      print(f"ERROR:{e}")
+      return f""
+  # see all pokemons
+  else:
+    pokemons = Pokemon.query.order_by(Pokemon.p_id).all()
+    return render_template("index.html", pokemons=pokemons)
 
 
 
 """
-CREATE DATABASE
+SECONDARY PAGE
 """
-# mycursor.execute("CREATE DATABASE pokemon_app_db")
-# mydb.database = "pokemon_app_db"
-
-# create_table_query = """
-# CREATE TABLE IF NOT EXISTS Pokemon (
-#     pokemon_id INT UNIQUE NOT NULL PRIMARY KEY,
-#     name VARCHAR(255) NOT NULL,
-#     base_hp INT NOT NULL,
-#     base_atk INT NOT NULL,
-#     type VARCHAR(50),
-#     evolution VARCHAR(50)
-# );
-# """
-# mycursor.execute(create_table_query)
-
-
-
-"""
-CREATE TABLE AND INSERT DATA
-"""
-# pokemon_data = [
-#     (1, 'Bulbasaur', 45, 49, 'Grass/Poison', 'Base'),
-#     (2, 'Ivysaur', 60, 62, 'Grass/Poison', 'Stage 1'),
-#     (3, 'Venusaur', 80, 82, 'Grass/Poison', 'Stage 2'),
-#     (4, 'Charmander', 39, 52, 'Fire', 'Base'),
-#     (5, 'Charmeleon', 58, 64, 'Fire', 'Stage 1'),
-#     (6, 'Charizard', 78, 84, 'Fire/Flying', 'Stage 2'),
-#     (7, 'Squirtle', 44, 48, 'Water', 'Base'),
-#     (8, 'Wartortle', 59, 63, 'Water', 'Stage 1'),
-#     (9, 'Blastoise', 79, 83, 'Water', 'Stage 2'),
-#     (10, 'Pikachu', 35, 55, 'Electric', 'Base'),
-#     (11, 'Raichu', 60, 90, 'Electric', 'Stage 1')
-# ]
-# insert_query = """
-# INSERT INTO IF NOT EXISTS pokemon (pokemon_id, name, base_hp, base_atk, type, evolution)
-# VALUES (%s, %s, %s, %s, %s, %s)
-# """
-# mycursor.executemany(insert_query, pokemon_data)
-# mydb.commit()
+# delete pokemon
+@app.route("/delete/<int:id>")
+def delete(id:int):
+  del_pokemon = Pokemon.query.get_or_404(id)
+  try:
+    pokemon_db.session.delete(del_pokemon)
+    pokemon_db.session.commit()
+    return redirect("/")
+  except Exception as e:
+      print(f"ERROR:{e}")
+      return f""
+  
+# update pokemon
+@app.route("/edit/<int:id>",methods=["POST","GET"])
+def edit(id:int):
+  pokemon = Pokemon.query.get_or_404(id)
+  if request.method == "POST":
+    pokemon.p_name = request.form["Name"]
+    try:
+      pokemon_db.session.commit()
+      return redirect("/")
+    except Exception as e:
+      print(f"ERROR:{e}")
+      return f""
+  else:
+    return render_template("edit.html", pokemon=pokemon)
 
 
 
 """
-APP FUNCTIONS
+START this shit
 """
-### CREATE
-def InsertPokemon():
-  p_id = mycursor.lastrowid + 1
-  p_name = input("Name: ")
-  p_hp = int(input("Base HP: "))
-  p_atk = int(input("Base ATK: "))
-  p_type = input("Type: ")
-  p_evolution = input("Evolution stage: ")
-  insert_query = """
-  INSERT INTO pokemon (p_id, p_name, p_hp, p_atk, p_type, p_evolution)
-  VALUES (%s, %s, %s, %s, %s, %s)
-  """
-  mycursor.execute(insert_query)
-  mydb.commit()
-
-### READ
-def FilterPokemon():
-  filter_base = input("How do you want to filter Pokemon? > ") # bude sa dat vybrat podla coho filtrovat
-  filter_options = ["Name A-Z", "Name Z-A", "Letter in name", "HP", "ATK", "Type", "Evolution stage"]
-
-### UPDATE
-def EditPokemon():
-  pass
-
-### DELETE
-def DeletePokemon():
-  pass
-
-
-
-"""
-CHECKER
-"""
-# mycursor.execute("SHOW TABLES")
-# print("Tables in 'pokemon_app_db':")
-# for table in mycursor:
-#     print(table)
-
-# mycursor.execute("SELECT * FROM pokemon")
-# print("Inserted Pokémon:")
-# for row in mycursor:
-#     print(row)
-
 if __name__ in "__main__":
-   app.run(debug=True)
+  with app.app_context():
+    pokemon_db.create_all()
+  app.run(debug=True)

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <title>Pokemon Database 1.0</title>
+    <title>Pokedex 1.0</title>
 {% endblock %}
 
 {% block body %}
@@ -9,30 +9,37 @@
 
         <h1>!!! A big fat juicy custom fancy pokemon database !!!</h1>
         
+        {% if pokemons | length < 1%}
+        <h3>!!! There are no pokemons in database.</h3>
+        {% else %}
         <table>
             <tr>
                 <th>Name</th>
                 <th>ID</th>
                 <th>Type</th>
                 <th>Base HP</th>
-                <th>Base ATK</th>
                 <th>Evolution stage</th>
             </tr>
+            {% for pokemon in pokemons %}
             <tr>
-                <td>Pikachu</td>
-                <td>1</td>
-                <td>electric</td>
-                <td>60</td>
-                <td>20</td>
-                <td>basic</td>
+                <td>{{pokemon.p_name}}</td>
+                <td>{{pokemon.p_id}}</td>
+                <td>{{pokemon.p_type}}</td>
+                <td>{{pokemon.p_id}}</td>
+                <td>{{pokemon.p_evolution}}</td>
+                <td>
+                    <a href="/delete/{{pokemon.p_id}}">Delete</a>
+                    <br/>
+                    <a href="/edit/{{pokemon.p_id}}">Edit</a>
+                </td>
             </tr>
+            {% endfor %}
         </table>
-        
-        <form action="">
+        {% endif %}
+        <form action="/" method="POST">
             <input type="text" name="Name" id="p_name">
             <input type="text" name="Type" id="p_type">
             <input type="text" name="Base HP" id="p_hp">
-            <input type="text" name="Base ATK" id="p_atk">
             <input type="text" name="Evolution stage" id="p_evolution">
             <input type="submit" value="Add Pokemon" id="btn_add">
         </form>

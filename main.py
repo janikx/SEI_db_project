@@ -35,8 +35,11 @@ MAIN PAGE
 def index():
   # add pokemon
   if request.method == "POST":
-    cur_pokemon = request.form["Name"]
-    new_pokemon = Pokemon(p_name=cur_pokemon)
+    pokemon_name = request.form["Name"]
+    pokemon_type = request.form["Type"]
+    pokemon_hp = int(request.form["Base HP"])
+    pokemon_ev = request.form["Evolution stage"]
+    new_pokemon = Pokemon(p_name=pokemon_name, p_type=pokemon_type, p_hp=pokemon_hp, p_evolution=pokemon_ev)
     try:
       pokemon_db.session.add(new_pokemon)
       pokemon_db.session.commit()

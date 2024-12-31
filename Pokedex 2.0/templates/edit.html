@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Pokedex 1.0 ~ edit</title>
+{% endblock %}
+
+{% block body %}
+    <div class="content">
+
+        <h1>! Edit the pokemon !</h1>
+
+        <form action="/edit/{{pokemon.0}}" method="POST">
+            <input type="text" name="Name" id="p_name" placeholder="Name" value="{{pokemon.1}}">
+            <input type="number" name="ID" id="p_id" placeholder="ID" value="{{pokemon.0}}">
+            <input type="number" name="base_hp" id="p_hp" placeholder="Base HP" value="{{pokemon.2}}">
+            <input type="text" name="Type" id="p_type" placeholder="Type" value="{{pokemon.3}}">
+            <input type="text" name="Evolution" id="p_evolution" placeholder="Evolution Stage" value="{{pokemon.4}}">
+            <input type="submit" value="Edit">
+        </form>
+        <a href="/"><button>Back</button></a>
+        
+    </div>
+{% endblock %}

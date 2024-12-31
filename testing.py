@@ -69,8 +69,7 @@ def InsertPokemon():
 def ShowPokemon(filter: str):
   mycursor.execute("SELECT * FROM Pokemon " + f"{filter}")
   all_pokemons = mycursor.fetchall()
-  for pokemon in all_pokemons:
-    print(pokemon)
+  print(all_pokemons)
 
 def FilterPokemon():
   filter_base = int(input("How do you want to filter Pokemon? (1-8) > "))
@@ -137,6 +136,4 @@ def DeletePokemon():
 CHECKER
 """
 
-ShowPokemon("")
-EditPokemon()
 ShowPokemon("")

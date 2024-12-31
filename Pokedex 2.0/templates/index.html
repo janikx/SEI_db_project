@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Pokedex 1.0</title>
+{% endblock %}
+
+{% block body %}
+    <div class="content">
+
+        <h1>!!! Pokedex 2.0 !!!</h1>
+        
+        {% if pokemons | length < 1%}
+        <h3>!!! There are no pokemons in database.</h3>
+        {% else %}
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Base HP</th>
+                <th>Type</th>
+                <th>Evolution stage</th>
+            </tr>
+            {% for pokemon in pokemons %}
+            <tr>
+                <td>{{pokemon.1}}</td>
+                <td>{{pokemon.0}}</td>
+                <td>{{pokemon.2}}</td>
+                <td>{{pokemon.3}}</td>
+                <td>{{pokemon.4}}</td>
+                <td>
+                    <a href="/delete/{{pokemon.0}}"><button>Delete</button></a>
+                    <br/>
+                    <a href="/edit/{{pokemon.0}}"><button>Edit</button></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+        <form action="/" method="POST">
+            <input type="text" name="Name" id="p_name" placeholder="Name" required>
+            <input type="number" name="base_hp" id="p_hp" placeholder="Base HP" required>
+            <input type="text" name="Type" id="p_type" placeholder="Type" required>
+            <input type="text" name="Evolution" id="p_evolution" placeholder="Evolution Stage" required>
+            <input type="submit" value="Add Pokemon" id="btn_add">
+        </form>
+        
+
+    </div>
+{% endblock %}

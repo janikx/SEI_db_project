@@ -1,5 +1,14 @@
-OBHAJOBA MOJEJ PRÁCE
+ZADANIE CRUD APLIKACIA
 
+Program musí zvládať:
+1) Create - uloženie záznamu do DB 10b
+2) Update - úprava záznamu v DB 10b
+3) Read - načítanie záznamu / záznamov podľa filtra, aspoň dve kritéria podporovať, napr. meno a ID 10b
+4) Delete - vymazanie zaznamu z DB 10b
+
+
+
+OBHAJOBA MOJEJ PRÁCE
 Tema: App using MySQL DB
 Predpokladany vystup: Aplikacia s databazou pokemonov
 
@@ -9,7 +18,10 @@ Hlavne ciele:
 - jednoduche na pouzitie
 
 Splnene ciele:
-- 
+1)  ano
+2)  ano
+3)  ano
+4)  ano
 
 Hlavna tabulka:
 POKEMON

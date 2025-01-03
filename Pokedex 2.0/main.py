@@ -69,61 +69,83 @@ def insert_pokemon(p_name, p_type, p_hp, p_evolution):
   insert_values = (p_name, p_hp, p_type, p_evolution)
   mycursor.execute(insert_query, insert_values)
   mydb.commit()
-  print(f"Pokemon '{p_name}' succesfully added to pokedex.")
 
 ### READ
-def show_pokemon(filter: str):
-  mycursor.execute("SELECT * FROM Pokemon " + f"{filter}")
-  all_pokemons = mycursor.fetchall()
-  return all_pokemons
+def show_pokemon(order: str, filters={}):
+    conditions = []
+    parameters = []
 
-def filter_pokemon():
-  filter_base = int(input("How do you want to filter Pokemon? (1-8) > "))
-  # Name A-Z
-  if filter_base == 1:
-    show_pokemon("ORDER BY name ASC")
-  # Name Z-A
-  elif filter_base == 2:
-    show_pokemon("ORDER BY name DESC")
-  # Letter in name
-  elif filter_base == 3:
-    must_have_str = input("What does the name contain? > ")
-    show_pokemon(f"WHERE name LIKE '%{must_have_str.lower()}%'")
-  # HP asc
-  elif filter_base == 4:
-    show_pokemon("ORDER BY base_hp ASC")
-  # HP desc
-  elif filter_base == 5:
-    show_pokemon("ORDER BY base_hp DESC")
-  # Paticular type
-  elif filter_base == 6:
-    pokemon_type = input("What type? > ")
-    show_pokemon(f"WHERE type LIKE '%{pokemon_type.lower()}%'")
-  # Evolution stage
-  elif filter_base == 7:
-    pokemon_stage = input("What evolution stage? > ")
-    show_pokemon(f"WHERE evolution LIKE '%{pokemon_stage.lower()}%'")
-  # Type asc
-  elif filter_base == 8:
-    show_pokemon("ORDER BY type ASC")
+    # Add type filters
+    if "filter_type" in filters and filters["filter_type"]:
+      type_conditions = " OR ".join(["type LIKE %s"] * len(filters["filter_type"]))
+      conditions.append(f"({type_conditions})")
+      parameters.extend([f"%{t}%" for t in filters["filter_type"]])
 
+
+    # Add stage filters
+    if "filter_stage" in filters and filters["filter_stage"]:
+      type_conditions = " OR ".join(["evolution LIKE %s"] * len(filters["filter_stage"]))
+      conditions.append(f"({type_conditions})")
+      parameters.extend([f"%{t}%" for t in filters["filter_stage"]])
+
+    # Add HP filter
+    if "filter_hp" in filters and filters["filter_hp"]:
+        conditions.append("base_hp >= %s")
+        parameters.append(filters["filter_hp"])
+
+    # Add name filter
+    if "filter_name" in filters and filters["filter_name"]:
+        conditions.append("name LIKE %s")
+        parameters.append(f"%{filters['filter_name']}%")
+
+    filter_query = "WHERE " + " AND ".join(conditions) if conditions else ""
+    query = f"SELECT * FROM Pokemon {filter_query} ORDER BY {order}"
+    mycursor.execute(query, parameters)
+    return mycursor.fetchall()
+
+def order_pokemon(order_base:str):
+  if order_base == "NameAsc":   # Name A-Z
+      return show_pokemon("name ASC")
+  elif order_base == "NameDesc":   # Name Z-A
+      return show_pokemon("name DESC")
+  elif order_base == "HPAsc":   # HP asc
+      return show_pokemon("base_hp ASC")
+  elif order_base == "HPDesc":   # HP desc
+      return show_pokemon("base_hp DESC")
+  elif order_base == "TypeAsc":   # Type A-Z
+      return show_pokemon("type ASC")
+  elif order_base == "TypeDesc":   # Type Z-A
+      return show_pokemon("type DESC")
+  elif order_base == "EvolutionStage":   # Evolution
+      return show_pokemon("evolution ASC")
+  else:
+      return show_pokemon("id ASC")
 
 
 """
 MAIN PAGE
 """
-@app.route("/", methods=["POST", "GET"])
+@app.route("/", methods=["POST","GET","FILTER"])
 def index():
     if request.method == "POST":
         p_name = request.form["Name"]
         p_type = request.form["Type"]
         p_hp = int(request.form["base_hp"])
         p_evolution = request.form["Evolution"]
-        if p_hp > 0:
-            insert_pokemon(p_name, p_type, p_hp, p_evolution)
+        insert_pokemon(p_name, p_type, p_hp, p_evolution)
         return redirect("/")
+    if request.method == "GET":
+      filters = {
+            "filter_type": request.args.getlist("filter_type"),
+            "filter_stage": request.args.getlist("filter_stage"),
+            "filter_hp": request.args.get("filter_hp", type=int),
+            "filter_name": request.args.get("filter_name", ""),
+        }
+      order_base = request.args.get("order", "ID")
+      pokemons = show_pokemon(order_base, filters)
+      return render_template("index.html", pokemons=pokemons, order_base=order_base, **filters)
     else:
-        pokemons = show_pokemon("")
+        pokemons = order_pokemon("")
         return render_template("index.html", pokemons=pokemons)
 
 

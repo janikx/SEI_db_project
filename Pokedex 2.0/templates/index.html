@@ -1,16 +1,143 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <title>Pokedex 1.0</title>
+    <title>Pokedex 2.0</title>
 {% endblock %}
 
 {% block body %}
     <div class="content">
 
-        <h1>!!! Pokedex 2.0 !!!</h1>
+        <h1>> Pokedex 2.0</h1>
         
+        <!--------- FILTER BY --------->
+        <label for="form">Filter by ></label>
+        <form action="/" method="GET">
+            <!--------- Type filter --------->
+            <label for="divtype">Type </label>
+            <div id="divtype">
+                <label>
+                  <input type="checkbox" name="filter_type" value="fighting" {% if "fighting" in filter_type %}checked{% endif %}>
+                  fighting
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="psychic" {% if "psychic" in filter_type %}checked{% endif %}>
+                  psychic
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="poison" {% if "poison" in filter_type %}checked{% endif %}>
+                  poison
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="dragon" {% if "dragon" in filter_type %}checked{% endif %}>
+                  dragon
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="ghost" {% if "ghost" in filter_type %}checked{% endif %}>
+                  ghost
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="dark" {% if "dark" in filter_type %}checked{% endif %}>
+                  dark
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="ground" {% if "ground" in filter_type %}checked{% endif %}>
+                  ground
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="fire" {% if "fire" in filter_type %}checked{% endif %}>
+                  fire
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="fairy" {% if "fairy" in filter_type %}checked{% endif %}>
+                  fairy
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="water" {% if "water" in filter_type %}checked{% endif %}>
+                  water
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="flying" {% if "flying" in filter_type %}checked{% endif %}>
+                  flying
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="normal" {% if "normal" in filter_type %}checked{% endif %}>
+                  normal
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="rock" {% if "rock" in filter_type %}checked{% endif %}>
+                  rock
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="electric" {% if "electric" in filter_type %}checked{% endif %}>
+                  electric
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="bug" {% if "bug" in filter_type %}checked{% endif %}>
+                  bug
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="grass" {% if "grass" in filter_type %}checked{% endif %}>
+                  grass
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="ice" {% if "ice" in filter_type %}checked{% endif %}>
+                  ice
+                </label>
+                <label>
+                  <input type="checkbox" name="filter_type" value="steel" {% if "steel" in filter_type %}checked{% endif %}>
+                  steel
+                </label>
+            </div></br>
+            
+            <!--------- Stage filter --------->
+            <label for="divstage">Stage </label>
+            <div id="divstage">
+                <label>
+                    <input type="checkbox" name="filter_stage" value="basic" {% if "basic" in filter_stage %}checked{% endif %}>
+                    Basic
+                </label>
+                <label>
+                    <input type="checkbox" name="filter_stage" value="stage_1" {% if "stage_1" in filter_stage %}checked{% endif %}>
+                    Stage 1
+                </label>
+                <label>
+                    <input type="checkbox" name="filter_stage" value="stage_2" {% if "stage_2" in filter_stage %}checked{% endif %}>
+                    Stage 2
+                </label>
+            </div></br>
+
+            <!--------- HP filter --------->
+            <label for="filter_hp">Base HP (min) </label>
+            <input type="number" id="filter_hp" name="filter_hp" min="0" value="{{ filter_hp or '' }}"><br>
+
+            <!--------- Name filter --------->
+            <label for="filter_name">Name contains </label>
+            <input type="text" id="filter_name" name="filter_name" value="{{ filter_name }}"><br>
+
+            <button type="submit">Apply filter</button>
+        </form>
+        </br>
+
+        <!--------- ORDER BY --------->
+        <form action="/" method="GET">
+            <label for="order">Order by ></label>
+            <select id="order" name="order">
+                <option value="ID" {% if order_base == "ID" %}selected{% endif %}>ID</option>
+                <option value="NameAsc" {% if order_base == "NameAsc" %}selected{% endif %}>Name A-Z</option>
+                <option value="NameDesc" {% if order_base == "NameDesc" %}selected{% endif %}>Name Z-A</option>
+                <option value="TypeAsc" {% if order_base == "TypeAsc" %}selected{% endif %}>Type A-Z</option>
+                <option value="TypeDesc" {% if order_base == "TypeDesc" %}selected{% endif %}>Type Z-A</option>
+                <option value="EvolutionStage" {% if order_base == "EvolutionStage" %}selected{% endif %}>Evolution stage</option>
+                <option value="HPAsc" {% if order_base == "HPAsc" %}selected{% endif %}>HP asc</option>
+                <option value="HPDesc" {% if order_base == "HPDesc" %}selected{% endif %}>HP desc</option>
+            </select>
+            <button type="submit">Apply order</button>
+        </select>
+        </form>
+        </br>
+
         {% if pokemons | length < 1%}
-        <h3>!!! There are no pokemons in database.</h3>
+        <h3>!> No pokemon found.</h3>
         {% else %}
         <table>
             <tr>
@@ -36,14 +163,37 @@
             {% endfor %}
         </table>
         {% endif %}
+        <label for="form">Add pokemon ></label>
         <form action="/" method="POST">
             <input type="text" name="Name" id="p_name" placeholder="Name" required>
-            <input type="number" name="base_hp" id="p_hp" placeholder="Base HP" required>
-            <input type="text" name="Type" id="p_type" placeholder="Type" required>
-            <input type="text" name="Evolution" id="p_evolution" placeholder="Evolution Stage" required>
+            <input type="number" id="p_hp" min="0" max="400" step="1" placeholder="HP" required>
+            <select id="p_type" name="Type" required>
+                <option value="Fighting" {% if filter_base == "Fighting" %}selected{% endif %}>fighting</option>
+                <option value="Psychic" {% if filter_base == "Psychic" %}selected{% endif %}>psychic</option>
+                <option value="Poison" {% if filter_base == "Poison" %}selected{% endif %}>poison</option>
+                <option value="Dragon" {% if filter_base == "Dragon" %}selected{% endif %}>dragon</option>
+                <option value="Ghost" {% if filter_base == "Ghost" %}selected{% endif %}>ghost</option>
+                <option value="Dark" {% if filter_base == "Dark" %}selected{% endif %}>fark</option>
+                <option value="Ground" {% if filter_base == "Ground" %}selected{% endif %}>ground</option>
+                <option value="Fire" {% if filter_base == "Fire" %}selected{% endif %}>fire</option>
+                <option value="Fairy" {% if filter_base == "Fairy" %}selected{% endif %}>fairy</option>
+                <option value="Water" {% if filter_base == "Water" %}selected{% endif %}>water</option>
+                <option value="Flying" {% if filter_base == "Flying" %}selected{% endif %}>flying</option>
+                <option value="Normal" {% if filter_base == "Normal" %}selected{% endif %}>normal</option>
+                <option value="Rock" {% if filter_base == "Rock" %}selected{% endif %}>rock</option>
+                <option value="Electric" {% if filter_base == "Electric" %}selected{% endif %}>electric</option>
+                <option value="Bug" {% if filter_base == "Bug" %}selected{% endif %}>bug</option>
+                <option value="Grass" {% if filter_base == "Grass" %}selected{% endif %}>grass</option>
+                <option value="Ice" {% if filter_base == "Ice" %}selected{% endif %}>ice</option>
+                <option value="Steel" {% if filter_base == "Steel" %}selected{% endif %}>steel</option>
+            </select>
+            <select id="p_evolution" name="Evolution" required>
+                <option value="basic" {% if filter_base == "basic" %}selected{% endif %}>Basic</option>
+                <option value="stage 1" {% if filter_base == "stage 1" %}selected{% endif %}>Stage 1</option>
+                <option value="stage 2"  {% if filter_base == "stage 2" %}selected{% endif %}>Stage 2</option>
+            </select>
             <input type="submit" value="Add Pokemon" id="btn_add">
         </form>
-        
 
     </div>
 {% endblock %}

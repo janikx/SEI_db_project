@@ -14,42 +14,28 @@ mycursor = mydb.cursor()
 app = Flask(__name__)
 Scss(app)
 
+username = "Janik4833"
+password = "pokemondbpassword"
+
 
 
 """
 CREATE DB
 """
-    # mycursor.execute("CREATE DATABASE pokemon_app_db")
-    # mydb.database = "pokemon_app_db"
+# mycursor.execute("CREATE DATABASE pokemon_app_db")
+# mydb.database = "pokemon_app_db"
 
-    # create_table_query = """
-    # CREATE TABLE Pokemon (
-    #     id INT AUTO_INCREMENT UNIQUE NOT NULL PRIMARY KEY,
-    #     name VARCHAR(255) NOT NULL,
-    #     base_hp INT NOT NULL,
-    #     type VARCHAR(50),
-    #     evolution VARCHAR(50)
-    # );
-    # """
-    # mycursor.execute(create_table_query)
-    #
-    # pokemon_data = [
-    #     ('Bulbasaur', 60, 'grass/poison', 'basic'),
-    #     ('Ivysaur', 90, 'grass/poison', 'stage 1'),
-    #     ('Venusaur', 250, 'grass/poison', 'stage 2'),
-    #     ('Charmander', 60, 'fire', 'basic'),
-    #     ('Charmeleon', 90, 'fire', 'stage 1'),
-    #     ('Charizard', 220, 'fire/flying', 'stage 2'),
-    #     ('Squirtle', 60, 'water', 'basic'),
-    #     ('Wartortle', 90, 'water', 'stage 1'),
-    #     ('Blastoise', 230, 'water', 'stage 2'),
-    # ]
-    # insert_query = """
-    # INSERT INTO pokemon (name, base_hp, type, evolution)
-    # VALUES (%s, %s, %s, %s)
-    # """
-    # mycursor.executemany(insert_query, pokemon_data)
-    # mydb.commit()
+# create_table_query = """
+# CREATE TABLE Pokemon (
+#     id INT AUTO_INCREMENT UNIQUE NOT NULL PRIMARY KEY,
+#     name VARCHAR(255) NOT NULL,
+#     base_hp INT NOT NULL,
+#     type VARCHAR(50),
+#     evolution VARCHAR(50)
+# );
+# """
+# mycursor.execute(create_table_query)
+
 
 
 
@@ -125,13 +111,16 @@ def order_pokemon(order_base:str):
 """
 MAIN PAGE
 """
-@app.route("/", methods=["POST","GET","FILTER"])
+@app.route("/", methods=["POST","GET"])
 def index():
     if request.method == "POST":
         p_name = request.form["Name"]
         p_type = request.form["Type"]
-        p_hp = int(request.form["base_hp"])
+        p_secondary_type = request.form["Second Type"]
+        p_hp = int(request.form["HP"])
         p_evolution = request.form["Evolution"]
+        if p_secondary_type != "":
+            p_type = p_type + "/" + p_secondary_type
         insert_pokemon(p_name, p_type, p_hp, p_evolution)
         return redirect("/")
     if request.method == "GET":
@@ -143,7 +132,8 @@ def index():
         }
       order_base = request.args.get("order", "ID")
       pokemons = show_pokemon(order_base, filters)
-      return render_template("index.html", pokemons=pokemons, order_base=order_base, **filters)
+      pokemons_count = len(pokemons)
+      return render_template("index.html", pokemons=pokemons, pokemons_count=pokemons_count, order_base=order_base, **filters)
     else:
         pokemons = order_pokemon("")
         return render_template("index.html", pokemons=pokemons)
@@ -165,44 +155,47 @@ def delete_pokemon(pokemon_id):
         print(f"Error deleting Pokemon: {str(e)}")
         return f"Error: {str(e)}"
 
-
-  
 ### UPDATE
-@app.route("/edit/<int:pokemon_id>",methods=["POST","GET"])
+@app.route("/edit/<int:pokemon_id>", methods=["POST", "GET"])
 def edit_pokemon(pokemon_id):
     mycursor.execute("SELECT * FROM Pokemon WHERE id = %s", (pokemon_id,))
     pokemon = mycursor.fetchone()
     if not pokemon:
         return f"Pokemon with ID {pokemon_id} not found.", 404
-
     if request.method == "POST":
-      p_id = request.form.get("ID")
-      p_name = request.form.get("Name", "").capitalize()
-      p_hp = request.form.get("base_hp")
-      p_type = request.form.get("Type", "").lower()
-      p_evolution = request.form.get("Evolution", "").lower()
-      update_fields = {}
-      if p_id and p_id.isdigit() and int(p_id) != pokemon_id and int(p_id) > 0:
-          update_fields["id"] = int(p_id)
-      if p_name:
-          update_fields["name"] = p_name
-      if p_hp and p_hp.isdigit():
-          update_fields["base_hp"] = int(p_hp)
-      if p_type:
-          update_fields["type"] = p_type
-      if p_evolution:
-          update_fields["evolution"] = p_evolution
-      
-      for key, value in update_fields.items():
-        if value:
-            query = (f"UPDATE Pokemon SET {key}=%s WHERE id=%s")
-            mycursor.execute(query, (value, pokemon_id))
-      mydb.commit()
-      if "id" in update_fields:
-            return redirect(f"/edit/{update_fields['id']}")
-      return render_template("edit.html", pokemon=pokemon)
-    else:
-        return render_template("edit.html", pokemon=pokemon)
+        p_id = request.form.get("ID")
+        p_name = request.form.get("Name", "").capitalize()
+        p_hp = request.form.get("base_hp")
+        p_type = request.form.get("Type", "").lower()
+        p_evolution = request.form.get("Evolution", "").lower()
+        update_fields = []
+        update_values = []
+        if p_id and p_id.isdigit() and int(p_id) != pokemon_id and int(p_id) > 0:
+            update_fields.append("id")
+            update_values.append(int(p_id))
+        if p_name:
+            update_fields.append("name")
+            update_values.append(p_name)
+        if p_hp and p_hp.isdigit():
+            update_fields.append("base_hp")
+            update_values.append(int(p_hp))
+        if p_type:
+            update_fields.append("type")
+            update_values.append(p_type)
+        if p_evolution:
+            update_fields.append("evolution")
+            update_values.append(p_evolution)
+        if update_fields:
+            set_clause = ", ".join([f"{field}=%s" for field in update_fields])
+            query = f"UPDATE Pokemon SET {set_clause} WHERE id=%s"
+            update_values.append(pokemon_id)
+            mycursor.execute(query, tuple(update_values))
+            mydb.commit()
+        if "id" in update_fields:
+            return redirect(f"/edit/{update_values[0]}")
+        return redirect(f"/edit/{pokemon_id}")
+    return render_template("edit.html", pokemon=pokemon)
+
 
 
 

@@ -135,6 +135,12 @@
         </select>
         </form>
         </br>
+        
+        {% if pokemons_count %}
+        <p>Results > ({{pokemons_count}})</p>
+        {% else %}
+        <p>!> No pokemon found.</p>
+        {% endif %}
 
         {% if pokemons | length < 1%}
         <h3>!> No pokemon found.</h3>
@@ -163,29 +169,52 @@
             {% endfor %}
         </table>
         {% endif %}
+
+        <!--------- INSERT --------->
         <label for="form">Add pokemon ></label>
         <form action="/" method="POST">
             <input type="text" name="Name" id="p_name" placeholder="Name" required>
-            <input type="number" id="p_hp" min="0" max="400" step="1" placeholder="HP" required>
+            <input type="number" name="HP" id="p_hp" min="30" max="300" step="10" placeholder="HP" required>
             <select id="p_type" name="Type" required>
-                <option value="Fighting" {% if filter_base == "Fighting" %}selected{% endif %}>fighting</option>
-                <option value="Psychic" {% if filter_base == "Psychic" %}selected{% endif %}>psychic</option>
-                <option value="Poison" {% if filter_base == "Poison" %}selected{% endif %}>poison</option>
-                <option value="Dragon" {% if filter_base == "Dragon" %}selected{% endif %}>dragon</option>
-                <option value="Ghost" {% if filter_base == "Ghost" %}selected{% endif %}>ghost</option>
-                <option value="Dark" {% if filter_base == "Dark" %}selected{% endif %}>fark</option>
-                <option value="Ground" {% if filter_base == "Ground" %}selected{% endif %}>ground</option>
-                <option value="Fire" {% if filter_base == "Fire" %}selected{% endif %}>fire</option>
-                <option value="Fairy" {% if filter_base == "Fairy" %}selected{% endif %}>fairy</option>
-                <option value="Water" {% if filter_base == "Water" %}selected{% endif %}>water</option>
-                <option value="Flying" {% if filter_base == "Flying" %}selected{% endif %}>flying</option>
-                <option value="Normal" {% if filter_base == "Normal" %}selected{% endif %}>normal</option>
-                <option value="Rock" {% if filter_base == "Rock" %}selected{% endif %}>rock</option>
-                <option value="Electric" {% if filter_base == "Electric" %}selected{% endif %}>electric</option>
-                <option value="Bug" {% if filter_base == "Bug" %}selected{% endif %}>bug</option>
-                <option value="Grass" {% if filter_base == "Grass" %}selected{% endif %}>grass</option>
-                <option value="Ice" {% if filter_base == "Ice" %}selected{% endif %}>ice</option>
-                <option value="Steel" {% if filter_base == "Steel" %}selected{% endif %}>steel</option>
+              <option value="Fighting">fighting</option>
+              <option value="Psychic">psychic</option>
+              <option value="Poison">poison</option>
+              <option value="Dragon">dragon</option>
+              <option value="Ghost">ghost</option>
+              <option value="Dark">dark</option>
+              <option value="Ground">ground</option>
+              <option value="Fire">fire</option>
+              <option value="Fairy">fairy</option>
+              <option value="Water">water</option>
+              <option value="Flying">flying</option>
+              <option value="Normal">normal</option>
+              <option value="Rock">rock</option>
+              <option value="Electric">electric</option>
+              <option value="Bug">bug</option>
+              <option value="Grass">grass</option>
+              <option value="Ice">ice</option>
+              <option value="Steel">steel</option>
+            </select>
+            <select id="p_secondary_type" name="Second Type">
+              <option value="">none</option>
+              <option value="Fighting">fighting</option>
+              <option value="Psychic">psychic</option>
+              <option value="Poison">poison</option>
+              <option value="Dragon">dragon</option>
+              <option value="Ghost">ghost</option>
+              <option value="Dark">dark</option>
+              <option value="Ground">ground</option>
+              <option value="Fire">fire</option>
+              <option value="Fairy">fairy</option>
+              <option value="Water">water</option>
+              <option value="Flying">flying</option>
+              <option value="Normal">normal</option>
+              <option value="Rock">rock</option>
+              <option value="Electric">electric</option>
+              <option value="Bug">bug</option>
+              <option value="Grass">grass</option>
+              <option value="Ice">ice</option>
+              <option value="Steel">steel</option>
             </select>
             <select id="p_evolution" name="Evolution" required>
                 <option value="basic" {% if filter_base == "basic" %}selected{% endif %}>Basic</option>

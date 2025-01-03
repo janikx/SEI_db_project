@@ -12,9 +12,13 @@
         <form action="/edit/{{pokemon.0}}" method="POST">
             <input type="text" name="Name" id="p_name" placeholder="Name" value="{{pokemon.1}}">
             <input type="number" name="ID" id="p_id" placeholder="ID" value="{{pokemon.0}}">
-            <input type="number" name="base_hp" id="p_hp" placeholder="Base HP" value="{{pokemon.2}}">
+            <input type="number" name="HP" id="p_hp" min="30" max="300" step="10" placeholder="HP" value="{{pokemon.2}}">
             <input type="text" name="Type" id="p_type" placeholder="Type" value="{{pokemon.3}}">
-            <input type="text" name="Evolution" id="p_evolution" placeholder="Evolution Stage" value="{{pokemon.4}}">
+            <select id="p_evolution" name="Evolution" required>
+                <option value="basic" {% if pokemon.4 == "basic" %}selected{% endif %}>Basic</option>
+                <option value="stage 1" {% if pokemon.4 == "stage 1" %}selected{% endif %}>Stage 1</option>
+                <option value="stage 2"  {% if pokemon.4 == "stage 2" %}selected{% endif %}>Stage 2</option>
+            </select>
             <input type="submit" value="Edit">
         </form>
         <a href="/"><button>Back</button></a>

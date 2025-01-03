@@ -89,23 +89,24 @@ def show_pokemon(order: str, filters={}):
     mycursor.execute(query, parameters)
     return mycursor.fetchall()
 
-def order_pokemon(order_base:str):
-  if order_base == "NameAsc":   # Name A-Z
-      return show_pokemon("name ASC")
-  elif order_base == "NameDesc":   # Name Z-A
-      return show_pokemon("name DESC")
-  elif order_base == "HPAsc":   # HP asc
-      return show_pokemon("base_hp ASC")
-  elif order_base == "HPDesc":   # HP desc
-      return show_pokemon("base_hp DESC")
-  elif order_base == "TypeAsc":   # Type A-Z
-      return show_pokemon("type ASC")
-  elif order_base == "TypeDesc":   # Type Z-A
-      return show_pokemon("type DESC")
-  elif order_base == "EvolutionStage":   # Evolution
-      return show_pokemon("evolution ASC")
-  else:
-      return show_pokemon("id ASC")
+def order_pokemon(order_base: str):
+    if order_base == "NameAsc":   # Name A-Z
+        return "name ASC"
+    elif order_base == "NameDesc":   # Name Z-A
+        return "name DESC"
+    elif order_base == "HPAsc":   # HP asc
+        return "base_hp ASC"
+    elif order_base == "HPDesc":   # HP desc
+        return "base_hp DESC"
+    elif order_base == "TypeAsc":   # Type A-Z
+        return "type ASC"
+    elif order_base == "TypeDesc":   # Type Z-A
+        return "type DESC"
+    elif order_base == "EvolutionStage":   # Evolution
+        return "evolution ASC"  # Correct column name
+    else:
+        return "id ASC"
+
 
 
 """
@@ -131,7 +132,8 @@ def index():
             "filter_name": request.args.get("filter_name", ""),
         }
       order_base = request.args.get("order", "ID")
-      pokemons = show_pokemon(order_base, filters)
+      order = order_pokemon(order_base)
+      pokemons = show_pokemon(order, filters)
       pokemons_count = len(pokemons)
       return render_template("index.html", pokemons=pokemons, pokemons_count=pokemons_count, order_base=order_base, **filters)
     else:

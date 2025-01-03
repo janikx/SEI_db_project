@@ -108,7 +108,7 @@
 
             <!--------- HP filter --------->
             <label for="filter_hp">Base HP (min) </label>
-            <input type="number" id="filter_hp" name="filter_hp" min="0" value="{{ filter_hp or '' }}"><br>
+            <input type="number" id="filter_hp" name="filter_hp" min="0" step="10" value="{{ filter_hp or '' }}"><br>
 
             <!--------- Name filter --------->
             <label for="filter_name">Name contains </label>
@@ -170,7 +170,7 @@
         </table>
         {% endif %}
 
-        <!--------- INSERT --------->
+        <!--------- INSERT INTO --------->
         <label for="form">Add pokemon ></label>
         <form action="/" method="POST">
             <input type="text" name="Name" id="p_name" placeholder="Name" required>

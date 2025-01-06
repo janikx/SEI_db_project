@@ -169,6 +169,7 @@ def edit_pokemon(pokemon_id):
         p_name = request.form.get("Name", "").capitalize()
         p_hp = request.form.get("base_hp")
         p_type = request.form.get("Type", "").lower()
+        p_secondary_type = request.form.get("Second Type", "").lower()
         p_evolution = request.form.get("Evolution", "").lower()
         update_fields = []
         update_values = []
@@ -182,8 +183,13 @@ def edit_pokemon(pokemon_id):
             update_fields.append("base_hp")
             update_values.append(int(p_hp))
         if p_type:
-            update_fields.append("type")
-            update_values.append(p_type)
+            if p_secondary_type:
+                update_fields.append("type")
+                p_type = p_type + "/" + p_secondary_type
+                update_values.append(p_type)
+            else:
+                update_fields.append("type")
+                update_values.append(p_type)
         if p_evolution:
             update_fields.append("evolution")
             update_values.append(p_evolution)

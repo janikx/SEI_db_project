@@ -5,23 +5,68 @@
 {% endblock %}
 
 {% block body %}
-    <div class="content">
-
-        <h1>> Edit pokemon #{{pokemon.0}}</h1>
-
-        <form action="/edit/{{pokemon.0}}" method="POST">
-            <input type="text" name="Name" id="p_name" placeholder="Name" value="{{pokemon.1}}">
-            <input type="number" name="ID" id="p_id" placeholder="ID" value="{{pokemon.0}}">
-            <input type="number" name="HP" id="p_hp" min="30" max="300" step="10" placeholder="HP" value="{{pokemon.2}}">
-            <input type="text" name="Type" id="p_type" placeholder="Type" value="{{pokemon.3}}">
-            <select id="p_evolution" name="Evolution" required>
-                <option value="basic" {% if pokemon.4 == "basic" %}selected{% endif %}>Basic</option>
-                <option value="stage 1" {% if pokemon.4 == "stage 1" %}selected{% endif %}>Stage 1</option>
-                <option value="stage 2"  {% if pokemon.4 == "stage 2" %}selected{% endif %}>Stage 2</option>
-            </select>
-            <input type="submit" value="Edit">
-        </form>
-        <a href="/"><button>Back</button></a>
-        
+    <header>
+        <img src="https://fontmeme.com/permalink/250106/0309b2a5762678f6dfa6963ce1cc822b.png" alt="pokemon-font" border="0"><h1>edit#{{pokemon.0}}</h1>
+    </header>
+    <div class="containeredit">
+        <div class="boxedit">
+            <form action="/edit/{{pokemon.0}}" method="POST">
+                <input type="text" name="Name" id="p_name" placeholder="Name" value="{{pokemon.1}}">
+                <input type="number" name="ID" id="p_id" placeholder="ID" value="{{pokemon.0}}">
+                <input type="number" name="HP" id="p_hp" min="30" max="300" step="10" placeholder="HP" value="{{pokemon.2}}">
+                {% set types = pokemon.3.split('/') %}
+                <select id="p_type" name="Type" required>
+                    <option value="Fighting" {% if types.0 == "fighting" %}selected{% endif %}>fighting</option>
+                    <option value="Psychic" {% if types.0 == "psychic" %}selected{% endif %}>psychic</option>
+                    <option value="Poison" {% if types.0 == "poison" %}selected{% endif %}>poison</option>
+                    <option value="Dragon" {% if types.0 == "dragon" %}selected{% endif %}>dragon</option>
+                    <option value="Ghost" {% if types.0 == "ghost" %}selected{% endif %}>ghost</option>
+                    <option value="Dark" {% if types.0 == "dark" %}selected{% endif %}>dark</option>
+                    <option value="Ground" {% if types.0 == "ground" %}selected{% endif %}>ground</option>
+                    <option value="Fire" {% if types.0 == "fire" %}selected{% endif %}>fire</option>
+                    <option value="Fairy" {% if types.0 == "fairy" %}selected{% endif %}>fairy</option>
+                    <option value="Water" {% if types.0 == "water" %}selected{% endif %}>water</option>
+                    <option value="Flying" {% if types.0 == "flying" %}selected{% endif %}>flying</option>
+                    <option value="Normal" {% if types.0 == "normal" %}selected{% endif %}>normal</option>
+                    <option value="Rock" {% if types.0 == "rock" %}selected{% endif %}>rock</option>
+                    <option value="Electric" {% if types.0 == "electric" %}selected{% endif %}>electric</option>
+                    <option value="Bug" {% if types.0 == "bug" %}selected{% endif %}>bug</option>
+                    <option value="Grass" {% if types.0 == "grass" %}selected{% endif %}>grass</option>
+                    <option value="Ice" {% if types.0 == "ice" %}selected{% endif %}>ice</option>
+                    <option value="Steel" {% if types.0 == "steel" %}selected{% endif %}>steel</option>
+                </select>                
+                <select id="p_secondary_type" name="Second Type">
+                    <option value="">none</option>
+                    <option value="Fighting" {% if types.1 == "fighting" %}selected{% endif %}>fighting</option>
+                    <option value="Psychic" {% if types.1 == "psychic" %}selected{% endif %}>psychic</option>
+                    <option value="Poison" {% if types.1 == "poison" %}selected{% endif %}>poison</option>
+                    <option value="Dragon" {% if types.1 == "dragon" %}selected{% endif %}>dragon</option>
+                    <option value="Ghost" {% if types.1 == "ghost" %}selected{% endif %}>ghost</option>
+                    <option value="Dark" {% if types.1 == "dark" %}selected{% endif %}>dark</option>
+                    <option value="Ground" {% if types.1 == "ground" %}selected{% endif %}>ground</option>
+                    <option value="Fire" {% if types.1 == "fire" %}selected{% endif %}>fire</option>
+                    <option value="Fairy" {% if types.1 == "fairy" %}selected{% endif %}>fairy</option>
+                    <option value="Water" {% if types.1 == "water" %}selected{% endif %}>water</option>
+                    <option value="Flying" {% if types.1 == "flying" %}selected{% endif %}>flying</option>
+                    <option value="Normal" {% if types.1 == "normal" %}selected{% endif %}>normal</option>
+                    <option value="Rock" {% if types.1 == "rock" %}selected{% endif %}>rock</option>
+                    <option value="Electric" {% if types.1 == "electric" %}selected{% endif %}>electric</option>
+                    <option value="Bug" {% if types.1 == "bug" %}selected{% endif %}>bug</option>
+                    <option value="Grass" {% if types.1 == "grass" %}selected{% endif %}>grass</option>
+                    <option value="Ice" {% if types.1 == "ice" %}selected{% endif %}>ice</option>
+                    <option value="Steel" {% if types.1 == "steel" %}selected{% endif %}>steel</option>
+                </select>
+                <select id="p_evolution" name="Evolution" required>
+                    <option value="basic" {% if pokemon.4 == "basic" %}selected{% endif %}>basic</option>
+                    <option value="stage 1" {% if pokemon.4 == "stage 1" %}selected{% endif %}>stage 1</option>
+                    <option value="stage 2"  {% if pokemon.4 == "stage 2" %}selected{% endif %}>stage 2</option>
+                </select>
+                <input type="submit" value="Edit" class="addbtn">
+            </form>
+            <a href="/"><button>Back</button></a>
+        </div>
     </div>
+    <footer>
+        &copy; 2025 Janik, GYMLET
+    </footer>
 {% endblock %}
